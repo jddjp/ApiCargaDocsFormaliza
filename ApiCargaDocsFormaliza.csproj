@@ -11,10 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Documentos\" />
-    <Folder Include="cartera\" />
-    <Folder Include="originacion\" />
-    <Folder Include="personas\" />
+    <Folder Include="ExpedientesCartera\" />
+    <Folder Include="ExpedientesOriginacion\" />
+    <Folder Include="ExpedientesPersona\" />
   </ItemGroup>
 
 

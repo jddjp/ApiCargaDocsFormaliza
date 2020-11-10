@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiCargaDocsFormaliza.Data;
 using ApiCargaDocsFormaliza.Data.Configuracion;
+using ApiCargaDocsFormaliza.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -32,18 +33,17 @@ namespace ApiCargaDocsFormaliza
             // MongoDB
             services.Configure<ClientesStoreDatabaseSettings>(
                             Configuration.GetSection(nameof(ClientesStoreDatabaseSettings)));
-
             services.AddSingleton<IClientesStoreDatabaseSettings>(sp =>
                             sp.GetRequiredService<IOptions<ClientesStoreDatabaseSettings>>().Value);
-
             services.AddSingleton<ClientesDb>();
-            //services.AddSingleton<ClientesDbAsync>();
-            //services.AddSingleton<ClientesDbQueryable>();
-            // http://mongodb.github.io/mongo-csharp-driver/2.0/reference/driver/connecting/#re-use
-            //services.AddSingleton<IClientSettingsService, ClientSettingsServiceMongoDB>();
-        }
+            //SegundaColeccionMongo
+            services.Configure<CredencialesClientesDatabaseSettings>(
+                            Configuration.GetSection(nameof(CredencialesClientesDatabaseSettings)));
+            services.AddSingleton<ICredencialesClienteDatabaseSettings>(sp =>
+                            sp.GetRequiredService<IOptions<CredencialesClientesDatabaseSettings>>().Value);
+            services.AddSingleton<CredencialesCliente>();
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

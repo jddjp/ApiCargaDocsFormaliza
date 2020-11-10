@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace ApiCargaDocsFormaliza.Entities
 {
-    public class Docs
+    public class CredencialesCliente
     {
-        public string NombreDoc { get; set; }
-        public string Documento { get; set; }
+        public string clave { get; set; }
+        public string UsuarioCliente { get; set; }
     }
 }

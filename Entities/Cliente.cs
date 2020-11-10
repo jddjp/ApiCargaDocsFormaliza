@@ -18,10 +18,10 @@ namespace ApiCargaDocsFormaliza.Entities
         public string Fecha_Emision { get; set; }
         public string Fecha_Vigencia { get; set; }
         public string Tipo_Documento { get; set; }
-        public string claveCliente { get; set; }
+        public string ClaveExpediente { get; set; }
         public String FechaHoraRegistro { get; set; }
         public string RutaDoc { get; set; }
-       public object Documento { get; set; }
+        public object Documento { get; set; }
       
 
     }

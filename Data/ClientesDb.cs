@@ -15,10 +15,7 @@ namespace ApiCargaDocsFormaliza.Data
 
              var mdbClient = new MongoClient(
                  settings.ConnectionString);
-           //var mdbClient = clientSettings.Client;
-
             var database = mdbClient.GetDatabase(settings.DatabaseName);
-
             _clientesCollection = database.GetCollection<Cliente>(settings.ClientesCollectionName);
         }
 

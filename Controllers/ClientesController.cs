@@ -64,34 +64,56 @@ namespace ApiCargaDocsFormaliza.Controllers
             }
             return BadRequest(cliente);
         }
+        public static void Rename(string OldPath, string NewPath){ }
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm]ClienteDatos data)
         {
-            var rutadoc = "";
-            var filePath= "";
-            //// var size = data.Documento.Length;
-            if (data.ClaveOrigen == "1")
+          //Folder name nivel alto donde se almacenan los documentos 
+          //Cartera,personas,Originacion
+            string folderName = @"C:\Users\DanielPerez\source\repos\ApiCargaDocsFormaliza\ExpedientesCartera";
+          //Combinamos el foldername mas la clave del cliente para crear una ruta unica del cliente
+            string pathString = System.IO.Path.Combine(folderName,data.ClaveExpediente);
+            System.IO.Directory.CreateDirectory(pathString);
+           pathString = System.IO.Path.Combine(pathString,data.Documento.FileName);
+            if (!System.IO.File.Exists(pathString))
             {
-                rutadoc = "192.168.200.203:9048/cartera/";
-                filePath = "C:\\Users\\DanielPerez\\source\\repos\\ApiCargaDocsFormaliza\\cartera\\" + data.Documento.FileName + "";
-            }
-            if (data.ClaveOrigen == "2")
+             using (System.IO.FileStream fs = System.IO.File.Create(pathString))
+                {
+                    for (byte i = 0; i < 100; i++)
+                    {
+                        fs.WriteByte(i);
+                    }
+                    using (var stream = new FileStream(pathString, FileMode.Create))
+                    {
+                        await data.Documento.CopyToAsync(stream);
+
+                    }
+                }
+            }else
             {
-                rutadoc = "192.168.200.203:9048/personas/";
-                filePath = "C:\\Users\\DanielPerez\\source\\repos\\ApiCargaDocsFormaliza\\personas\\" + data.Documento.FileName + "";
+
+               
+
             }
-            if (data.ClaveOrigen == "3")
-            {
-                rutadoc = "192.168.200.203:9048/originacion/";
-                filePath = "C:\\Users\\DanielPerez\\source\\repos\\ApiCargaDocsFormaliza\\originacion\\" + data.Documento.FileName + "";
-            }
+            ////// var size = data.Documento.Length;
+            //if (data.ClaveOrigen == "1")
+            //{
+            //    rutadoc = "192.168.200.203:9048/cartera/";
+            //    filePath = "C:\\Users\\DanielPerez\\source\\repos\\ApiCargaDocsFormaliza\\cartera\\" + data.Documento.FileName + "";
+            //}
+            //if (data.ClaveOrigen == "2")
+            //{
+            //    rutadoc = "192.168.200.203:9048/personas/";
+            //    filePath = "C:\\Users\\DanielPerez\\source\\repos\\ApiCargaDocsFormaliza\\personas\\" + data.Documento.FileName + "";
+            //}
+            //if (data.ClaveOrigen == "3")
+            //{
+            //    rutadoc = "192.168.200.203:9048/originacion/";
+            //    filePath = "C:\\Users\\DanielPerez\\source\\repos\\ApiCargaDocsFormaliza\\originacion\\" + data.Documento.FileName + "";
+            //}
 
             // string filePath = "C:\\inetpub\\wwwroot\\ApiBackDocumentos\\Documentos\\" + data.Documento.FileName+"";
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await data.Documento.CopyToAsync(stream);
-              
-            }
+           
             MyObject obj = new MyObject();
             var doc ="";
             using (var memoryStream = new MemoryStream())
@@ -110,12 +132,12 @@ namespace ApiCargaDocsFormaliza.Controllers
                 FechaHoraRegistro=DateTime.Now.ToString(),
                 Tipo_Documento=data.Tipo_Documento,
                 Documento= obj,
-                RutaDoc= rutadoc+data.Documento.FileName,
-                claveCliente=data.claveCliente,
+                RutaDoc= pathString,
+                 ClaveExpediente = data.ClaveExpediente,
                  //RutaDoc= "192.168.200.203:9048/Documentos/"+data.Documento.FileName
             };
             _clienteDb.Create(cliente);
-
+           
             return CreatedAtRoute("GetCliente", new
             {
                 id = cliente.Id.ToString(),
