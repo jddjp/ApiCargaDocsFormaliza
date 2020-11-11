@@ -135,7 +135,11 @@ namespace ApiCargaDocsFormaliza.Controllers
                 Fecha_Registro = DateTime.Now.ToString(),
                 Tipo_Documento = data.TipoExpediente,
                 Documento_data = obj,
-                URL = pathString,
+                URL = "https://qa.adocs.aprecia.com.mx:9048/Documentos/"+_clienteDb.GetById2(data.CredencialesCliente).Clave+"/"+
+                 _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente+"/"+
+                data.IdExpediente+"/"+
+                subex
+                +"/"+data.Documento.FileName
                 // ClaveExpediente = data.ClaveExpediente,
                 //RutaDoc= "192.168.200.203:9048/Documentos/"+data.Documento.FileName
             };
