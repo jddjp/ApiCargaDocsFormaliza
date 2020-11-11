@@ -1,6 +1,6 @@
 ﻿namespace ApiCargaDocsFormaliza.Controllers
 {
-    public class MyObject
+    public class Expediente
     {
         public byte[] Documento { get; set; }
     }

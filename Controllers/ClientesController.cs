@@ -29,8 +29,8 @@ namespace ApiCargaDocsFormaliza.Controllers
             return Ok(_clienteDb.Get());
         }
 
-        [HttpGet("{id:length(24)}/{claveinformacion}", Name = "GetCliente")]
-        public IActionResult GetById(string id,string claveinformacion)
+        [HttpGet("{id}/{claveinformacion}", Name = "GetCliente")]
+        public IActionResult GetById(string id, string claveinformacion)
         {
             var cliente = _clienteDb.GetById(id);
 
@@ -40,23 +40,23 @@ namespace ApiCargaDocsFormaliza.Controllers
             }
             if (claveinformacion == "01")
             {
-                return Ok(cliente.RutaDoc);
+                return Ok(cliente.URL);
             }
-            if(claveinformacion == "02")
+            if (claveinformacion == "02")
             {
-                return Ok(cliente.Documento);
+                return Ok(cliente.Documento_data);
             }
             if (claveinformacion == "03")
             {
-                return Ok(cliente.ClaveOrigen);
+                return Ok(cliente.Clave_Origen);
             }
             if (claveinformacion == "04")
             {
-                return Ok(cliente.ClaveOrigen);
+                return Ok(cliente.Clave_Origen);
             }
             if (claveinformacion == "05")
             {
-                return Ok(cliente.FechaHoraRegistro);
+                return Ok(cliente.Fecha_Registro);
             }
             if (claveinformacion == "10")
             {
@@ -64,58 +64,60 @@ namespace ApiCargaDocsFormaliza.Controllers
             }
             return BadRequest(cliente);
         }
-        public static void Rename(string OldPath, string NewPath){ }
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm]ClienteDatos data)
         {
-          //Folder name nivel alto donde se almacenan los documentos 
-          //Cartera,personas,Originacion
-            string folderName = @"C:\Users\DanielPerez\source\repos\ApiCargaDocsFormaliza\ExpedientesCartera";
-          //Combinamos el foldername mas la clave del cliente para crear una ruta unica del cliente
-            string pathString = System.IO.Path.Combine(folderName,data.ClaveExpediente);
+           
+          //Validamos si los credenciales de quien solicita la peticion existen 
+         //y nos traemos la carpeta raiz definida para sus documentos
+            if (_clienteDb.GetById2(data.CredencialesCliente) == null) return BadRequest("No tiene acceso");
+            //Vamos a validar la ruta de Expedientecliente pues esta ruta no tiene TipóSubExpediente
+            var subex="";
+            if (data.TipoExpediente == "0027")
+            {
+                subex = data.IdExpediente;
+            }
+            else 
+            {
+                subex =_clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente).Descripcion_SubExpediente;
+
+            }
+            //Combinamos el foldername mas la clave del cliente para crear una ruta unica del cliente de Peticiones para Api
+            string pathString = System.IO.Path.Combine(
+                  _clienteDb.GetById2(data.CredencialesCliente).UbicacionRaiz + _clienteDb.GetById2(data.CredencialesCliente).Clave,
+                  _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente, data.IdExpediente,
+                subex);
+         
             System.IO.Directory.CreateDirectory(pathString);
-           pathString = System.IO.Path.Combine(pathString,data.Documento.FileName);
+            pathString = System.IO.Path.Combine(pathString, data.Documento.FileName);
+           
             if (!System.IO.File.Exists(pathString))
             {
-             using (System.IO.FileStream fs = System.IO.File.Create(pathString))
+                using (System.IO.FileStream fs = System.IO.File.Create(pathString))
                 {
                     for (byte i = 0; i < 100; i++)
                     {
                         fs.WriteByte(i);
                     }
-                    using (var stream = new FileStream(pathString, FileMode.Create))
-                    {
-                        await data.Documento.CopyToAsync(stream);
 
-                    }
                 }
-            }else
+            }
+            else
             {
-
-               
+                return BadRequest("El documento ya Existe");
 
             }
-            ////// var size = data.Documento.Length;
-            //if (data.ClaveOrigen == "1")
-            //{
-            //    rutadoc = "192.168.200.203:9048/cartera/";
-            //    filePath = "C:\\Users\\DanielPerez\\source\\repos\\ApiCargaDocsFormaliza\\cartera\\" + data.Documento.FileName + "";
-            //}
-            //if (data.ClaveOrigen == "2")
-            //{
-            //    rutadoc = "192.168.200.203:9048/personas/";
-            //    filePath = "C:\\Users\\DanielPerez\\source\\repos\\ApiCargaDocsFormaliza\\personas\\" + data.Documento.FileName + "";
-            //}
-            //if (data.ClaveOrigen == "3")
-            //{
-            //    rutadoc = "192.168.200.203:9048/originacion/";
-            //    filePath = "C:\\Users\\DanielPerez\\source\\repos\\ApiCargaDocsFormaliza\\originacion\\" + data.Documento.FileName + "";
-            //}
+            using (var stream = new FileStream(pathString, FileMode.Create))
+            {
+                await data.Documento.CopyToAsync(stream);
 
-            // string filePath = "C:\\inetpub\\wwwroot\\ApiBackDocumentos\\Documentos\\" + data.Documento.FileName+"";
-           
-            MyObject obj = new MyObject();
-            var doc ="";
+            }
+
+            // string filePath = "C:\\inetpub\\wwwroot\\ApiBackDocumentos\\Documentos\\" + data.Documento.FileName + "";
+
+            Expediente obj = new Expediente();
+            var doc = "";
             using (var memoryStream = new MemoryStream())
             {
                 await data.Documento.CopyToAsync(memoryStream);
@@ -123,30 +125,31 @@ namespace ApiCargaDocsFormaliza.Controllers
                 obj.Documento = barray;
                 doc = Convert.ToBase64String(obj.Documento);
             }
-         
-              cliente = new Cliente()
+
+            cliente = new Cliente()
             {
-                Fecha_Emision=data.Fecha_Emision,
-                Fecha_Vigencia=data.Fecha_Vigencia,
-                ClaveOrigen = data.ClaveOrigen,
-                FechaHoraRegistro=DateTime.Now.ToString(),
-                Tipo_Documento=data.Tipo_Documento,
-                Documento= obj,
-                RutaDoc= pathString,
-                 ClaveExpediente = data.ClaveExpediente,
-                 //RutaDoc= "192.168.200.203:9048/Documentos/"+data.Documento.FileName
+                Clave_Origen = _clienteDb.GetById2(data.CredencialesCliente).Clave,
+                Fecha_Emision = data.Fecha_Emision,
+                Fecha_Vigencia = data.Fecha_Vigencia,
+                Clave_Expediente = data.IdExpediente,
+                Fecha_Registro = DateTime.Now.ToString(),
+                Tipo_Documento = data.TipoExpediente,
+                Documento_data = obj,
+                URL = pathString,
+                // ClaveExpediente = data.ClaveExpediente,
+                //RutaDoc= "192.168.200.203:9048/Documentos/"+data.Documento.FileName
             };
             _clienteDb.Create(cliente);
-           
+
             return CreatedAtRoute("GetCliente", new
             {
                 id = cliente.Id.ToString(),
-                claveinformacion="10"
+                claveinformacion = "10"
             }, cliente);
             //return Ok(cliente);
         }
 
-        [HttpPut("{id:length(24)}")]
+        [HttpPut("{id}")]
         public IActionResult Update(string id, Cliente cli)
         {
             var cliente = _clienteDb.GetById(id);
@@ -161,7 +164,7 @@ namespace ApiCargaDocsFormaliza.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id:length(24)}")]
+        [HttpDelete("{id}")]
         public IActionResult DeleteById(string id)
         {
             var cliente = _clienteDb.GetById(id);
@@ -175,6 +178,6 @@ namespace ApiCargaDocsFormaliza.Controllers
 
             return NoContent();
         }
-    
-}
+
+    }
 }

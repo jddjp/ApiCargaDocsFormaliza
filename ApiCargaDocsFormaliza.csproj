@@ -10,11 +10,5 @@
     <PackageReference Include="MongoDB.Driver" Version="2.11.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ExpedientesCartera\" />
-    <Folder Include="ExpedientesOriginacion\" />
-    <Folder Include="ExpedientesPersona\" />
-  </ItemGroup>
-
 
 </Project>

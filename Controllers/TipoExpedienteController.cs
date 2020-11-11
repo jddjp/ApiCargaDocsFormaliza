@@ -12,13 +12,13 @@ namespace ApiCargaDocsFormaliza.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CredencialesController : ControllerBase
+    public class TipoExpedienteController : ControllerBase
     {
 
         private readonly ClientesDb _clienteDb;
         private Cliente cliente;
 
-        public CredencialesController(ClientesDb clienteDb)
+        public TipoExpedienteController(ClientesDb clienteDb)
         {
             _clienteDb = clienteDb;
         }
@@ -27,28 +27,28 @@ namespace ApiCargaDocsFormaliza.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_clienteDb.Get2());
+            return Ok(_clienteDb.GetExpedientes());
         
         }
 
-        [HttpGet("{id}", Name = "GetCredenciales")]
+        [HttpGet("{id}", Name = "GetExpedientes")]
         public IActionResult GetById(string id)
         {
-            var cliente = _clienteDb.GetByidclavecredenciales(id);
+            var cliente = _clienteDb.GetByIdExpedienteClave(id);
 
            return BadRequest(cliente);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(Cliente2 cliente2)
+        public async Task<IActionResult> CreateAsync(TipoExpediente tipoexpediente)
         {
 
-            _clienteDb.Create2(cliente2);
-            return Ok(cliente2);
+            _clienteDb.CreateExpediente(tipoexpediente);
+            return Ok(tipoexpediente);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:length(24)}")]
         public IActionResult Update(string id, Cliente2 cli)
         {
             var cliente = _clienteDb.GetById2(id);
@@ -63,7 +63,7 @@ namespace ApiCargaDocsFormaliza.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:length(24)}")]
         public IActionResult DeleteById(string id)
         {
             var cliente = _clienteDb.GetById2(id);

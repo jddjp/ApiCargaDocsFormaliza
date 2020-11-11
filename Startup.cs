@@ -36,12 +36,7 @@ namespace ApiCargaDocsFormaliza
             services.AddSingleton<IClientesStoreDatabaseSettings>(sp =>
                             sp.GetRequiredService<IOptions<ClientesStoreDatabaseSettings>>().Value);
             services.AddSingleton<ClientesDb>();
-            //SegundaColeccionMongo
-            services.Configure<CredencialesClientesDatabaseSettings>(
-                            Configuration.GetSection(nameof(CredencialesClientesDatabaseSettings)));
-            services.AddSingleton<ICredencialesClienteDatabaseSettings>(sp =>
-                            sp.GetRequiredService<IOptions<CredencialesClientesDatabaseSettings>>().Value);
-            services.AddSingleton<CredencialesCliente>();
+           
 
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

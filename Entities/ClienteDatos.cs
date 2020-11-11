@@ -10,16 +10,19 @@ namespace ApiCargaDocsFormaliza.Entities
 {
     public class ClienteDatos
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-        public string ClaveOrigen { get; set; }
+        
+      
         public string Fecha_Emision { get; set; }
         public string Fecha_Vigencia { get; set; }
-        public string Tipo_Documento { get; set; }
-        public string ClaveExpediente { get; set; }
-        public string RutaDoc { get; set; }
-        public string info { get; set; }
+        //TipoExpediente
+        public string TipoExpediente { get; set; }
+        //ClaveExpediente 
+        public string TipocSubExpediente { get; set; }
+        //IdentificadorExpediente
+        public string IdExpediente { get; set; }
+        //Pedir Credenciales Cliente
+        public string CredencialesCliente { get; set; }
+        //DocumentoFisico
         public IFormFile Documento { get; set; }
       
 
