@@ -32,7 +32,8 @@ namespace ApiCargaDocsFormaliza.Data
         //FuncionesGet de cada Collection
         public List<Cliente> Get()
         {
-            return _clientesCollection.Find(cli => true).ToList();
+            return _clientesCollection.Find<Cliente>(cli => true).ToList();
+
         }
       
         public List<Cliente2> Get2()
@@ -54,7 +55,7 @@ namespace ApiCargaDocsFormaliza.Data
         }
         public List<Cliente> GetByClave_Expediente(string id)
         {
-            return _clientesCollection.Find(cli => cli.Clave_Expediente == id).ToList();
+            return _clientesCollection.Find<Cliente>(cli => cli.Clave_Expediente == id).ToList();
         }
         public Cliente2 GetById2(string id)
         {
