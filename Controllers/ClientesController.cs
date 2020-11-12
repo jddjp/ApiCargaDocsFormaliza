@@ -32,10 +32,37 @@ namespace ApiCargaDocsFormaliza.Controllers
         [HttpGet("{id}/{claveinformacion}", Name = "GetCliente")]
         public IActionResult GetById(string id, string claveinformacion)
         {
-            var cliente = _clienteDb.GetDurls(id);
+            var cliente = _clienteDb.GetById(id);
 
-           
-            return Ok(cliente);
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+            if (claveinformacion == "01")
+            {
+                return Ok(cliente.URL);
+            }
+            if (claveinformacion == "02")
+            {
+                return Ok(cliente.Documento_data);
+            }
+            if (claveinformacion == "03")
+            {
+                return Ok(cliente.Clave_Origen);
+            }
+            if (claveinformacion == "04")
+            {
+                return Ok(cliente.Clave_Origen);
+            }
+            if (claveinformacion == "05")
+            {
+                return Ok(cliente.Fecha_Registro);
+            }
+            if (claveinformacion == "10")
+            {
+                return Ok(cliente);
+            }
+            return BadRequest(cliente);
         }
 
         [HttpPost]
@@ -60,7 +87,7 @@ namespace ApiCargaDocsFormaliza.Controllers
             string pathString = System.IO.Path.Combine(
                   _clienteDb.GetById2(data.CredencialesCliente).UbicacionRaiz + _clienteDb.GetById2(data.CredencialesCliente).Clave,
                   _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente, data.IdExpediente,
-                  subex);
+                subex);
          
             System.IO.Directory.CreateDirectory(pathString);
             pathString = System.IO.Path.Combine(pathString, data.Documento.FileName);
@@ -86,6 +113,9 @@ namespace ApiCargaDocsFormaliza.Controllers
                 await data.Documento.CopyToAsync(stream);
 
             }
+
+            // string filePath = "C:\\inetpub\\wwwroot\\ApiBackDocumentos\\Documentos\\" + data.Documento.FileName + "";
+
             Expediente obj = new Expediente();
             var doc = "";
             using (var memoryStream = new MemoryStream())
@@ -105,22 +135,11 @@ namespace ApiCargaDocsFormaliza.Controllers
                 Fecha_Registro = DateTime.Now.ToString(),
                 Tipo_Documento = data.TipoExpediente,
                 Documento_data = obj,
-                URL = "https://qa.adocs.aprecia.com.mx:9048/Documentos/"+_clienteDb.GetById2(data.CredencialesCliente).Clave+"/"+
-                 _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente+"/"+
-                data.IdExpediente+"/"+
-                subex
-                +"/"+data.Documento.FileName
+                URL = pathString,
+                // ClaveExpediente = data.ClaveExpediente,
+                //RutaDoc= "192.168.200.203:9048/Documentos/"+data.Documento.FileName
             };
-            if (_clienteDb.GetByClave_Expediente(data.IdExpediente) == null)
-            {
-                _clienteDb.Create(cliente);
-            }
-            else
-            {
-                _clienteDb.Update(cliente);
-            }
-
-          
+            _clienteDb.Create(cliente);
 
             return CreatedAtRoute("GetCliente", new
             {
@@ -140,7 +159,7 @@ namespace ApiCargaDocsFormaliza.Controllers
                 return NotFound();
             }
 
-            _clienteDb.Update( cli);
+            _clienteDb.Update(id, cli);
 
             return NoContent();
         }
