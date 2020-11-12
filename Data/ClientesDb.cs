@@ -104,9 +104,9 @@ namespace ApiCargaDocsFormaliza.Data
         }
 
         //Funciones Update de cada collection
-        public void Update( Cliente cli)
+        public void Update(string id, Cliente cli)
         {
-            _clientesCollection.ReplaceOne(cliente => cliente.Id == cli.Clave_Expediente, cli);
+            _clientesCollection.ReplaceOne(cliente => cliente.Id == id, cli);
         }
         public void Update2(string id, Cliente2 cli)
         {
