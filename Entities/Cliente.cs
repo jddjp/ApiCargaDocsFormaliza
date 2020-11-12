@@ -22,7 +22,8 @@ namespace ApiCargaDocsFormaliza.Entities
         public String Fecha_Registro { get; set; }
         public string URL { get; set; }
         public object Documento_data { get; set; }
-      
+     
+
 
     }
 }

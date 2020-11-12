@@ -34,6 +34,11 @@ namespace ApiCargaDocsFormaliza.Data
         {
             return _clientesCollection.Find(cli => true).ToList();
         }
+        public List<Cliente> GetDurls(string id)
+        {
+            return _clientesCollection.Find<Cliente>(cliente => cliente.Id == id).ToList();
+       
+        }
         public List<Cliente2> Get2()
         {
             return _clientes2Collection.Find(cli => true).ToList();
@@ -50,6 +55,10 @@ namespace ApiCargaDocsFormaliza.Data
         public Cliente GetById(string id)
         {
             return _clientesCollection.Find<Cliente>(cliente => cliente.Id == id).FirstOrDefault();
+        }
+        public Cliente GetByClave_Expediente(string id)
+        {
+            return _clientesCollection.Find<Cliente>(cliente => cliente.Clave_Expediente == id).FirstOrDefault();
         }
         public Cliente2 GetById2(string id)
         {
@@ -95,9 +104,9 @@ namespace ApiCargaDocsFormaliza.Data
         }
 
         //Funciones Update de cada collection
-        public void Update(string id, Cliente cli)
+        public void Update( Cliente cli)
         {
-            _clientesCollection.ReplaceOne(cliente => cliente.Id == id, cli);
+            _clientesCollection.ReplaceOne(cliente => cliente.Id == cli.Clave_Expediente, cli);
         }
         public void Update2(string id, Cliente2 cli)
         {
