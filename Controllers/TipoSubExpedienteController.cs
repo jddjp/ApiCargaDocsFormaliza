@@ -36,7 +36,7 @@ namespace ApiCargaDocsFormaliza.Controllers
         {
             var cliente = _clienteDb.GetByIdsubExpedienteClave(id);
 
-           return BadRequest(cliente);
+           return Ok(cliente);
         }
 
 

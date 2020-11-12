@@ -18,10 +18,14 @@ namespace ApiCargaDocsFormaliza.Entities
         public string Fecha_Emision { get; set; }
         public string Fecha_Vigencia { get; set; }
         public string Tipo_Documento { get; set; }
+        public string Tipo_Expediente { get; set; }
+        
         public string Clave_Expediente { get; set; }
-        public String Fecha_Registro { get; set; }
+        public string Fecha_Registro { get; set; }
         public string URL { get; set; }
-        public object Documento_data { get; set; }
+        [BsonElement("Documento_data")]
+        [BsonRepresentation(BsonType.String)]
+        public string Documento_data { get; set; }
      
 
 

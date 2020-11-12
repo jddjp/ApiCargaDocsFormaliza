@@ -24,7 +24,7 @@ namespace ApiCargaDocsFormaliza.Entities
         public string CredencialesCliente { get; set; }
         //DocumentoFisico
         public IFormFile Documento { get; set; }
-      
+        public string Tipo_Documento { get; set; }
 
     }
 }

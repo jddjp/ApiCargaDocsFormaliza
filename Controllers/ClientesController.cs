@@ -32,10 +32,13 @@ namespace ApiCargaDocsFormaliza.Controllers
         [HttpGet("{id}", Name = "GetCliente")]
         public IActionResult GetById(string id)
         {
-            var cliente = _clienteDb.GetById(id);
-
-            
-                return Ok(cliente);
+            var cliente = _clienteDb.GetByClave_Expediente(id);
+            if (cliente.Count == 0)
+            {
+                return NotFound();
+            }
+           
+            return Ok(cliente);
            
         }
 
@@ -58,14 +61,15 @@ namespace ApiCargaDocsFormaliza.Controllers
 
             }
             //Combinamos el foldername mas la clave del cliente para crear una ruta unica del cliente de Peticiones para Api
+            var tipoexpediente = _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente;
             string pathString = System.IO.Path.Combine(
                   _clienteDb.GetById2(data.CredencialesCliente).UbicacionRaiz + _clienteDb.GetById2(data.CredencialesCliente).Clave,
-                  _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente, data.IdExpediente,
+                tipoexpediente, data.IdExpediente,
                   subex);
-         
+         //Creamos el Directorio 
             System.IO.Directory.CreateDirectory(pathString);
             pathString = System.IO.Path.Combine(pathString, data.Documento.FileName);
-           
+          //Validamos si el documento Existe
             if (!System.IO.File.Exists(pathString))
             {
                 using (System.IO.FileStream fs = System.IO.File.Create(pathString))
@@ -82,6 +86,7 @@ namespace ApiCargaDocsFormaliza.Controllers
                 return BadRequest("El documento ya Existe");
 
             }
+            //Copiamos el documento y o archivo en el servidor
             using (var stream = new FileStream(pathString, FileMode.Create))
             {
                 await data.Documento.CopyToAsync(stream);
@@ -96,7 +101,7 @@ namespace ApiCargaDocsFormaliza.Controllers
                 obj.Documento = barray;
                 doc = Convert.ToBase64String(obj.Documento);
             }
-
+            //Guardamos La informacion Correspondiente en la base de datos
             cliente = new Cliente()
             {
                 Clave_Origen = _clienteDb.GetById2(data.CredencialesCliente).Clave,
@@ -104,23 +109,21 @@ namespace ApiCargaDocsFormaliza.Controllers
                 Fecha_Vigencia = data.Fecha_Vigencia,
                 Clave_Expediente = data.IdExpediente,
                 Fecha_Registro = DateTime.Now.ToString(),
-                Tipo_Documento = data.TipoExpediente,
-                Documento_data = obj,
+                Tipo_Expediente = tipoexpediente,
+                Tipo_Documento=data.Tipo_Documento,
+                Documento_data = doc,
                 URL = "https://qa.adocs.aprecia.com.mx:9048/Documentos/"+_clienteDb.GetById2(data.CredencialesCliente).Clave+"/"+
                  _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente+"/"+
                 data.IdExpediente+"/"+
                 subex
                 +"/"+data.Documento.FileName
             };
-
-            
-            
+            //Se crea el documento en la base de datos 
             _clienteDb.Create(cliente);
-
+            //redireccionamos la api a la funcin getcliente donde busca sus clientes 
             return CreatedAtRoute("GetCliente", new
             {
-                id = cliente.Id.ToString(),
-                claveinformacion = "10"
+                id = cliente.Clave_Expediente.ToString()
             }, cliente);
             //return Ok(cliente);
         }

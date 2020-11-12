@@ -52,10 +52,10 @@ namespace ApiCargaDocsFormaliza.Data
         {
             return _clientesCollection.Find<Cliente>(cliente => cliente.Id == id).FirstOrDefault();
         }
-        //public Cliente GetByClave_Expediente(string id)
-        //{
-        //    return _clientesCollection.Find<Cliente>(cliente => cliente.Clave_Expediente == id).FirstOrDefault();
-        //}
+        public List<Cliente> GetByClave_Expediente(string id)
+        {
+            return _clientesCollection.Find(cli => cli.Clave_Expediente == id).ToList();
+        }
         public Cliente2 GetById2(string id)
         {
             return _clientes2Collection.Find<Cliente2>(cliente2 => cliente2.Id == id).FirstOrDefault();

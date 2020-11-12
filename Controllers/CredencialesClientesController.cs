@@ -36,7 +36,7 @@ namespace ApiCargaDocsFormaliza.Controllers
         {
             var cliente = _clienteDb.GetByidclavecredenciales(id);
 
-           return BadRequest(cliente);
+           return Ok(cliente);
         }
 
 
