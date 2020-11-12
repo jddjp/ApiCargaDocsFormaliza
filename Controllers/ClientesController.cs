@@ -29,40 +29,14 @@ namespace ApiCargaDocsFormaliza.Controllers
             return Ok(_clienteDb.Get());
         }
 
-        [HttpGet("{id}/{claveinformacion}", Name = "GetCliente")]
-        public IActionResult GetById(string id, string claveinformacion)
+        [HttpGet("{id}", Name = "GetCliente")]
+        public IActionResult GetById(string id)
         {
             var cliente = _clienteDb.GetById(id);
 
-            if (cliente == null)
-            {
-                return NotFound();
-            }
-            if (claveinformacion == "01")
-            {
-                return Ok(cliente.URL);
-            }
-            if (claveinformacion == "02")
-            {
-                return Ok(cliente.Documento_data);
-            }
-            if (claveinformacion == "03")
-            {
-                return Ok(cliente.Clave_Origen);
-            }
-            if (claveinformacion == "04")
-            {
-                return Ok(cliente.Clave_Origen);
-            }
-            if (claveinformacion == "05")
-            {
-                return Ok(cliente.Fecha_Registro);
-            }
-            if (claveinformacion == "10")
-            {
+            
                 return Ok(cliente);
-            }
-            return BadRequest(cliente);
+           
         }
 
         [HttpPost]
@@ -138,15 +112,11 @@ namespace ApiCargaDocsFormaliza.Controllers
                 subex
                 +"/"+data.Documento.FileName
             };
-            if (_clienteDb.GetByClave_Expediente(data.IdExpediente) == null)
-            {
-                _clienteDb.Create(cliente);
-            }
-            else
-            {
-            }
 
-          
+            
+            
+            _clienteDb.Create(cliente);
+
             return CreatedAtRoute("GetCliente", new
             {
                 id = cliente.Id.ToString(),
