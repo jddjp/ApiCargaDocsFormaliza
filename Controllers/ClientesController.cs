@@ -87,7 +87,7 @@ namespace ApiCargaDocsFormaliza.Controllers
             string pathString = System.IO.Path.Combine(
                   _clienteDb.GetById2(data.CredencialesCliente).UbicacionRaiz + _clienteDb.GetById2(data.CredencialesCliente).Clave,
                   _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente, data.IdExpediente,
-                subex);
+                  subex);
          
             System.IO.Directory.CreateDirectory(pathString);
             pathString = System.IO.Path.Combine(pathString, data.Documento.FileName);
@@ -113,9 +113,6 @@ namespace ApiCargaDocsFormaliza.Controllers
                 await data.Documento.CopyToAsync(stream);
 
             }
-
-            // string filePath = "C:\\inetpub\\wwwroot\\ApiBackDocumentos\\Documentos\\" + data.Documento.FileName + "";
-
             Expediente obj = new Expediente();
             var doc = "";
             using (var memoryStream = new MemoryStream())
@@ -140,11 +137,16 @@ namespace ApiCargaDocsFormaliza.Controllers
                 data.IdExpediente+"/"+
                 subex
                 +"/"+data.Documento.FileName
-                // ClaveExpediente = data.ClaveExpediente,
-                //RutaDoc= "192.168.200.203:9048/Documentos/"+data.Documento.FileName
             };
-            _clienteDb.Create(cliente);
+            if (_clienteDb.GetByClave_Expediente(data.IdExpediente) == null)
+            {
+                _clienteDb.Create(cliente);
+            }
+            else
+            {
+            }
 
+          
             return CreatedAtRoute("GetCliente", new
             {
                 id = cliente.Id.ToString(),
