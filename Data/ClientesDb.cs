@@ -8,6 +8,7 @@ namespace ApiCargaDocsFormaliza.Data
 {
     public class ClientesDb
     {
+
         //Collection Expedientes
         private readonly IMongoCollection<Cliente> _clientesCollection;
         //Collection Credenciales
@@ -16,37 +17,42 @@ namespace ApiCargaDocsFormaliza.Data
         private readonly IMongoCollection<TipoExpediente> _clientes3Collection;
         //Collection TipoSubExpediente
         private readonly IMongoCollection<TipoSubExpediente> _clientes4Collection;
+        //Collection TipoDocumento
+        private readonly IMongoCollection<TipoDocumento> _clientes5Collection;
 
         public ClientesDb(IClientesStoreDatabaseSettings settings)
         {
 
-             var mdbClient = new MongoClient(
-                 settings.ConnectionString);
+            var mdbClient = new MongoClient(
+            settings.ConnectionString);
             var database = mdbClient.GetDatabase(settings.DatabaseName);
             _clientesCollection = database.GetCollection<Cliente>(settings.ClientesCollectionName);
             _clientes2Collection = database.GetCollection<Cliente2>(settings.ClientesCollectionName2);
             _clientes3Collection = database.GetCollection<TipoExpediente>(settings.ClientesCollectionName3);
             _clientes4Collection = database.GetCollection<TipoSubExpediente>(settings.ClientesCollectionName4);
+            _clientes5Collection = database.GetCollection<TipoDocumento>(settings.ClientesCollectionName5);
         }
      
         //FuncionesGet de cada Collection
         public List<Cliente> Get()
         {
             return _clientesCollection.Find<Cliente>(cli => true).ToList();
-
         }
-      
         public List<Cliente2> Get2()
         {
             return _clientes2Collection.Find(cli => true).ToList();
         }
-        public List<TipoExpediente> GetExpedientes()
+        public List<TipoExpediente>GetExpedientes()
         {
             return _clientes3Collection.Find(cli => true).ToList();
         }
         public List<TipoSubExpediente> GetSubExpedientes()
         {
             return _clientes4Collection.Find(cli => true).ToList();
+        }
+        public List<TipoDocumento> GetTipoDocumento()
+        {
+            return _clientes5Collection.Find(cli => true).ToList();
         }
         //FuncionesGetByid de cada Collection
         public Cliente GetById(string id)
@@ -59,23 +65,27 @@ namespace ApiCargaDocsFormaliza.Data
         }
         public Cliente2 GetById2(string id)
         {
-            return _clientes2Collection.Find<Cliente2>(cliente2 => cliente2.Id == id).FirstOrDefault();
+            return _clientes2Collection.Find<Cliente2>(cliente2 => cliente2.Clave_Origen == id).FirstOrDefault();
         }
         public Cliente2 GetByidclavecredenciales(string id)
         {
-            return _clientes2Collection.Find<Cliente2>(cliente3 => cliente3.Clave == id).FirstOrDefault();
+            return _clientes2Collection.Find<Cliente2>(cliente3 => cliente3.Clave_Origen == id).FirstOrDefault();
         }
-        public TipoExpediente GetByIdExpediente(string id)
-        {
-            return _clientes3Collection.Find<TipoExpediente>(expediente => expediente.Id == id).FirstOrDefault();
-        }
-        public TipoExpediente GetByIdExpedienteClave(string id)
+        public TipoExpediente GetByIdExpediente(int id)
         {
             return _clientes3Collection.Find<TipoExpediente>(expediente => expediente.Clave == id).FirstOrDefault();
         }
-        public TipoSubExpediente GetByIdsubExpedienteClave(string id)
+        public TipoExpediente GetByIdExpedienteClave(int id)
+        {
+            return _clientes3Collection.Find<TipoExpediente>(expediente => expediente.Clave == id).FirstOrDefault();
+        }
+        public TipoSubExpediente GetByIdsubExpedienteClave(int id)
         {
             return _clientes4Collection.Find<TipoSubExpediente>(subexpediente => subexpediente.Clave == id).FirstOrDefault();
+        }
+        public TipoDocumento GetByIdTipoDocumento(int id)
+        {
+            return _clientes5Collection.Find<TipoDocumento>(tipodocumento => tipodocumento.Cod_Documento == id).FirstOrDefault();
         }
         //Funciones Create de cada Collection
         public Cliente Create(Cliente cli)
@@ -99,25 +109,42 @@ namespace ApiCargaDocsFormaliza.Data
             _clientes4Collection.InsertOne(cli);
             return cli;
         }
+        public TipoDocumento CreateTipoDocumento(TipoDocumento cli)
+        {
+            _clientes5Collection.InsertOne(cli);
+            return cli;
+        }
 
         //Funciones Update de cada collection
         public void Update(string id, Cliente cli)
         {
             _clientesCollection.ReplaceOne(cliente => cliente.Id == id, cli);
         }
-        public void Update2(string id, Cliente2 cli)
+        public void Update2(Cliente2 cli)
         {
-            _clientes2Collection.ReplaceOne(cliente2 => cliente2.Id == id, cli);
+            _clientes2Collection.ReplaceOne(cliente2 => cliente2.Id == cli.Id, cli);
         }
-        public void UpdateExpediente(string id, TipoExpediente cli)
+        public void UpdateSubexpediente(TipoSubExpediente cli)
         {
-            _clientes3Collection.ReplaceOne(expediente => expediente.Id == id, cli);
+            _clientes4Collection.ReplaceOne(subexpediente => subexpediente.Clave == cli.Clave, cli);
+        }
+        public void UpdateExpediente(TipoExpediente cli)
+        {
+            _clientes3Collection.ReplaceOne(expediente => expediente.Clave == cli.Clave, cli);
+        }
+        public void UpdateTipoDocumento(TipoDocumento cli)
+        {
+            _clientes5Collection.ReplaceOne(tipodocumento => tipodocumento.Cod_Documento == cli.Cod_Documento, cli);
         }
 
         //Funciones delete de cada Collection
         public void Delete(Cliente cli)
         {
             _clientesCollection.DeleteOne(cliente => cliente.Id == cli.Id);
+        }
+        public void DeleteTipoDocumento(TipoDocumento cli)
+        {
+            _clientes5Collection.DeleteOne(cliente => cliente.Cod_Documento == cli.Cod_Documento);
         }
 
         //Funciones delete byid de cada collection
@@ -133,6 +160,14 @@ namespace ApiCargaDocsFormaliza.Data
         public void DeleteByIdExpediente(string id)
         {
             _clientes3Collection.DeleteOne(expediente => expediente.Id == id);
+        }
+        public void DeleteByIdSubExpediente(string id)
+        {
+            _clientes4Collection.DeleteOne(expediente => expediente.Id == id);
+        }
+        public void DeleteByCodTipodocumento(int id)
+        {
+            _clientes5Collection.DeleteOne(tipodocumento => tipodocumento.Cod_Documento == id);
         }
 
     }

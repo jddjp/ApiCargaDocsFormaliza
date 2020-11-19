@@ -12,7 +12,7 @@ namespace ApiCargaDocsFormaliza.Entities
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        public string Clave { get; set; }
+        public int Clave { get; set; }
         public string Descripcion_Expediente { get; set; }
     }
 }

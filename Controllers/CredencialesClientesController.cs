@@ -43,24 +43,23 @@ namespace ApiCargaDocsFormaliza.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync(Cliente2 cliente2)
         {
-
             _clienteDb.Create2(cliente2);
             return Ok(cliente2);
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Update(string id, Cliente2 cli)
+        [HttpPut]
+        public IActionResult Update(Cliente2 cli)
         {
-            var cliente = _clienteDb.GetById2(id);
+            var cliente = _clienteDb.GetById2(cli.Id);
 
             if (cliente == null)
             {
                 return NotFound();
             }
 
-            _clienteDb.Update2(id, cli);
+            _clienteDb.Update2(cli);
 
-            return NoContent();
+            return Ok(cli);
         }
 
         [HttpDelete("{id}")]
@@ -75,7 +74,7 @@ namespace ApiCargaDocsFormaliza.Controllers
 
             _clienteDb.DeleteById2(cliente.Id);
 
-            return NoContent();
+            return Ok("Registro Eliminado");
         }
 
     }

@@ -11,6 +11,7 @@ namespace ApiCargaDocsFormaliza.Data.Configuracion
         public string ClientesCollectionName2 { get; set; }
         public string ClientesCollectionName3 { get; set; }
         public string ClientesCollectionName4 { get; set; }
+        public string ClientesCollectionName5 { get; set; }
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }
     }
@@ -19,6 +20,7 @@ namespace ApiCargaDocsFormaliza.Data.Configuracion
         public string ClientesCollectionName2 { get; set; }
         public string ClientesCollectionName3 { get; set; }
         public string ClientesCollectionName4 { get; set; }
+        public string ClientesCollectionName5 { get; set; }
         string ClientesCollectionName { get; set; }
         string ConnectionString { get; set; }
         string DatabaseName { get; set; }

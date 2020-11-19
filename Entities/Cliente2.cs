@@ -11,9 +11,9 @@ namespace ApiCargaDocsFormaliza.Entities
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        public string Clave { get; set;}
-        public string Descripcion { get; set; }
-        public string UbicacionRaiz { get; set; }
+        public string Clave_Origen { get; set;}
+        public string Razon_Social { get; set; }
+        public string Ubicacion_Raiz { get; set; }
       
     }
 }

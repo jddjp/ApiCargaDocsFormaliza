@@ -45,13 +45,16 @@ namespace ApiCargaDocsFormaliza.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm]ClienteDatos data)
         {
-           
-          //Validamos si los credenciales de quien solicita la peticion existen 
-         //y nos traemos la carpeta raiz definida para sus documentos
+            
+            //Validamos si los credenciales de quien solicita la peticion existen 
+           //y nos traemos la carpeta raiz definida para sus documentos
             if (_clienteDb.GetById2(data.CredencialesCliente) == null) return BadRequest("No tiene acceso");
+            if (_clienteDb.GetByIdTipoDocumento(data.Tipo_Documento)==null) return BadRequest("Tipo de documento no Encontrado");
+            if (_clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente) == null) return BadRequest("Tipo de Sub Expediente no Encontrado");
+            if (_clienteDb.GetByIdExpedienteClave(data.TipoExpediente) == null) return BadRequest("Tipo de  Expediente no Encontrado");
             //Vamos a validar la ruta de Expedientecliente pues esta ruta no tiene TipóSubExpediente
             var subex="";
-            if (data.TipoExpediente == "0027")
+            if (data.TipoExpediente == 0027)
             {
                 subex = data.IdExpediente;
             }
@@ -63,9 +66,8 @@ namespace ApiCargaDocsFormaliza.Controllers
             //Combinamos el foldername mas la clave del cliente para crear una ruta unica del cliente de Peticiones para Api
             var tipoexpediente = _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente;
             string pathString = System.IO.Path.Combine(
-                  _clienteDb.GetById2(data.CredencialesCliente).UbicacionRaiz + _clienteDb.GetById2(data.CredencialesCliente).Clave,
-                tipoexpediente, data.IdExpediente,
-                  subex);
+                  _clienteDb.GetById2(data.CredencialesCliente).Ubicacion_Raiz + _clienteDb.GetById2(data.CredencialesCliente).Clave_Origen,
+                 tipoexpediente, data.IdExpediente,subex);
          //Creamos el Directorio 
             System.IO.Directory.CreateDirectory(pathString);
             pathString = System.IO.Path.Combine(pathString, data.Documento.FileName);
@@ -104,15 +106,15 @@ namespace ApiCargaDocsFormaliza.Controllers
             //Guardamos La informacion Correspondiente en la base de datos
             cliente = new Cliente()
             {
-                Clave_Origen = _clienteDb.GetById2(data.CredencialesCliente).Clave,
-                Fecha_Emision = data.Fecha_Emision,
-                Fecha_Vigencia = data.Fecha_Vigencia,
+                Clave_Origen = _clienteDb.GetById2(data.CredencialesCliente).Clave_Origen,
+                Fecha_Emision = Convert.ToDateTime(data.Fecha_Emision),
+                Fecha_Vigencia = Convert.ToDateTime(data.Fecha_Vigencia),
                 Clave_Expediente = data.IdExpediente,
-                Fecha_Registro = DateTime.Now.ToString(),
+                Fecha_Registro = DateTime.Now,
                 Tipo_Expediente = tipoexpediente,
-                Tipo_Documento=data.Tipo_Documento,
+                Tipo_Documento= _clienteDb.GetByIdTipoDocumento(data.Tipo_Documento).Descripcion_Documento,
                 Documento_data = doc,
-                URL = "https://qa.adocs.aprecia.com.mx:9048/Documentos/"+_clienteDb.GetById2(data.CredencialesCliente).Clave+"/"+
+                URL = "https://qa.adocs.aprecia.com.mx:9048/Documentos/"+_clienteDb.GetById2(data.CredencialesCliente).Clave_Origen+"/"+
                  _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente+"/"+
                 data.IdExpediente+"/"+
                 subex
@@ -155,7 +157,7 @@ namespace ApiCargaDocsFormaliza.Controllers
 
             _clienteDb.DeleteById(cliente.Id);
 
-            return NoContent();
+            return Ok("Delete");
         }
 
     }

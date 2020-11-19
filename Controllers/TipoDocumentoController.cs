@@ -12,13 +12,13 @@ namespace ApiCargaDocsFormaliza.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TipoSubExpedienteController : ControllerBase
+    public class TipoDocumentoController : ControllerBase
     {
 
         private readonly ClientesDb _clienteDb;
         private Cliente cliente;
 
-        public TipoSubExpedienteController(ClientesDb clienteDb)
+        public TipoDocumentoController(ClientesDb clienteDb)
         {
             _clienteDb = clienteDb;
         }
@@ -27,54 +27,53 @@ namespace ApiCargaDocsFormaliza.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_clienteDb.GetSubExpedientes());
+            return Ok(_clienteDb.GetTipoDocumento());
         
         }
 
-        [HttpGet("{id}", Name = "GetSubExpedientes")]
+        [HttpGet("{id}", Name = "GetTipoDocumento")]
         public IActionResult GetById(int id)
         {
-            var cliente = _clienteDb.GetByIdsubExpedienteClave(id);
+            var cliente = _clienteDb.GetByIdTipoDocumento(id);
 
            return Ok(cliente);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(TipoSubExpediente subexpediente)
+        public async Task<IActionResult> CreateAsync(TipoDocumento tipodocumento)
         {
-              _clienteDb.CreateSubExpediente(subexpediente);
-            return Ok(subexpediente);
+              _clienteDb.CreateTipoDocumento(tipodocumento);
+            return Ok(tipodocumento);
         }
 
         [HttpPut]
-        public IActionResult Update(TipoSubExpediente cli)
+        public IActionResult Update(TipoDocumento cli)
         {
-            var cliente = _clienteDb.GetByIdsubExpedienteClave(cli.Clave);
+            var cliente = _clienteDb.GetByIdTipoDocumento(cli.Cod_Documento);
 
             if (cliente == null)
             {
                 return NotFound();
             }
 
-           _clienteDb.UpdateSubexpediente(cli);
+            _clienteDb.UpdateTipoDocumento(cli);
 
-            return Ok("Se Actualizo el registro");
+            return Ok("se Actualizo el Registro");
         }
-
         [HttpDelete("{id}")]
         public IActionResult DeleteById(int id)
         {
-            var cliente = _clienteDb.GetByIdsubExpedienteClave(id);
+            var cliente = _clienteDb.GetByIdTipoDocumento(id);
 
             if (cliente == null)
             {
                 return NotFound();
             }
 
-            _clienteDb.DeleteByIdSubExpediente(cliente.Id);
+            _clienteDb.DeleteByCodTipodocumento(cliente.Cod_Documento);
 
-            return Ok("Se elimino el registro");
+            return Ok();
         }
 
     }

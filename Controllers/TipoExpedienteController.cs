@@ -32,7 +32,7 @@ namespace ApiCargaDocsFormaliza.Controllers
         }
 
         [HttpGet("{id}", Name = "GetExpedientes")]
-        public IActionResult GetById(string id)
+        public IActionResult GetById(int id)
         {
             var cliente = _clienteDb.GetByIdExpedienteClave(id);
 
@@ -48,34 +48,34 @@ namespace ApiCargaDocsFormaliza.Controllers
             return Ok(tipoexpediente);
         }
 
-        [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, Cliente2 cli)
+        [HttpPut()]
+        public IActionResult Update(TipoExpediente cli)
         {
-            var cliente = _clienteDb.GetById2(id);
+            var cliente = _clienteDb.GetByIdExpediente(cli.Clave);
 
             if (cliente == null)
             {
                 return NotFound();
             }
 
-            _clienteDb.Update2(id, cli);
+            _clienteDb.UpdateExpediente(cli);
 
-            return NoContent();
+            return Ok("Registro Actualizado");
         }
 
-        [HttpDelete("{id:length(24)}")]
-        public IActionResult DeleteById(string id)
+        [HttpDelete("{id}")]
+        public IActionResult DeleteById(int id)
         {
-            var cliente = _clienteDb.GetById2(id);
+            var cliente = _clienteDb.GetByIdExpediente(id);
 
             if (cliente == null)
             {
                 return NotFound();
             }
 
-            _clienteDb.DeleteById2(cliente.Id);
+            _clienteDb.DeleteByIdExpediente(cliente.Id);
 
-            return NoContent();
+            return Ok("Registro Eliminado");
         }
 
     }

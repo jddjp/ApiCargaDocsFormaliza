@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace ApiCargaDocsFormaliza.Entities
 {
-    public class TipoSubExpediente
+    public class TipoDocumento
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        public int Clave { get; set; }
-        public string Descripcion_SubExpediente { get; set; }
+        public int Cod_Documento { get; set; }
+        public string Descripcion_Documento { get; set; }
+
     }
 }

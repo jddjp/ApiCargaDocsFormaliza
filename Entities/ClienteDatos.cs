@@ -12,19 +12,19 @@ namespace ApiCargaDocsFormaliza.Entities
     {
         
       
-        public string Fecha_Emision { get; set; }
-        public string Fecha_Vigencia { get; set; }
+        public DateTime Fecha_Emision { get; set; }
+        public DateTime Fecha_Vigencia { get; set; }
         //TipoExpediente
-        public string TipoExpediente { get; set; }
+        public int TipoExpediente { get; set; }
         //ClaveExpediente 
-        public string TipocSubExpediente { get; set; }
+        public int TipocSubExpediente { get; set; }
         //IdentificadorExpediente
         public string IdExpediente { get; set; }
         //Pedir Credenciales Cliente
         public string CredencialesCliente { get; set; }
         //DocumentoFisico
         public IFormFile Documento { get; set; }
-        public string Tipo_Documento { get; set; }
+        public int Tipo_Documento { get; set; }
 
     }
 }
