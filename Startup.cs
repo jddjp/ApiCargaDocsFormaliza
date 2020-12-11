@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 
 namespace ApiCargaDocsFormaliza
 {
@@ -25,10 +26,19 @@ namespace ApiCargaDocsFormaliza
         }
 
         public IConfiguration Configuration { get; }
-
+       
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("AppAdministration", new OpenApiInfo()
+                {
+                    Title = "Api Expedientes",
+                    Version = "V1"
+                });
+            });
             services.AddControllers();
             // MongoDB
             services.Configure<ClientesStoreDatabaseSettings>(
@@ -45,7 +55,14 @@ namespace ApiCargaDocsFormaliza
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseSwagger();
 
+
+            app.UseSwaggerUI(c =>
+            {
+                // c.SwaggerEndpoint("AppAdministration/swagger.json", "Api Creacion Docs");
+                c.SwaggerEndpoint("AppAdministration/swagger.json", "Api Creacion Expedientes");
+            });
             app.UseHttpsRedirection();
 
             app.UseRouting();
