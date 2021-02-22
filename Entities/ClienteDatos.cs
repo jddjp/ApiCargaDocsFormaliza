@@ -25,6 +25,9 @@ namespace ApiCargaDocsFormaliza.Entities
         //DocumentoFisico
         public IFormFile Documento { get; set; }
         public int Tipo_Documento { get; set; }
+        //Agregamos el tipo de SubSub expediente si
+        //es un documento que viene de la Api de Generacion de Documentos
+        public int TipocSubSubExpediente { get; set; }
 
     }
 }

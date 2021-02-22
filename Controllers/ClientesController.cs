@@ -7,9 +7,11 @@ using ApiCargaDocsFormaliza.Data;
 using ApiCargaDocsFormaliza.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ApiCargaDocsFormaliza.Controllers
 {
+   
     [Route("api/[controller]")]
     [ApiController]
     public class ClientesController : ControllerBase
@@ -52,26 +54,44 @@ namespace ApiCargaDocsFormaliza.Controllers
             if (_clienteDb.GetByIdTipoDocumento(data.Tipo_Documento)==null) return BadRequest("Tipo de documento no Encontrado");
             if (_clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente) == null) return BadRequest("Tipo de Sub Expediente no Encontrado");
             if (_clienteDb.GetByIdExpedienteClave(data.TipoExpediente) == null) return BadRequest("Tipo de  Expediente no Encontrado");
+          
+
             //Vamos a validar la ruta de Expedientecliente pues esta ruta no tiene TipóSubExpediente
             var subex="";
-            if (data.TipoExpediente == 0027)
+            if (data.TipoExpediente == 27)
             {
                 subex = data.IdExpediente;
             }
+            //Validaremos si es de tipo Expediente de credito:22 y despues Originacion:2201 para agregar el subsubexpediente a la ruta 
+
+            else if (data.TipoExpediente == 22 & data.TipocSubExpediente == 2201)
+            {
+                if (_clienteDb.GetByIdTipoSubSubExpediente(data.TipocSubSubExpediente) == null) return BadRequest("Tipo de  SubSubExpediente no Encontrado");
+                subex = _clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente).Descripcion_SubExpediente+"\\"+ _clienteDb.GetByIdTipoSubSubExpediente(data.TipocSubSubExpediente).Descripcion_SubSubExpediente;
+
+
+            }//Sigue su flujo normal si yno entro en ninguna de las dos condiciones
             else 
             {
-                subex =_clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente).Descripcion_SubExpediente;
 
+                subex = _clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente).Descripcion_SubExpediente;
             }
+         
             //Combinamos el foldername mas la clave del cliente para crear una ruta unica del cliente de Peticiones para Api
-            var tipoexpediente = _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente;
+            var tipoexpediente = 
+                _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente;
+
             string pathString = System.IO.Path.Combine(
-                  _clienteDb.GetById2(data.CredencialesCliente).Ubicacion_Raiz + _clienteDb.GetById2(data.CredencialesCliente).Clave_Origen,
+                  _clienteDb.GetById2(data.CredencialesCliente).Ubicacion_Raiz
+
+                  + _clienteDb.GetById2(data.CredencialesCliente).Clave_Origen,
                  tipoexpediente, data.IdExpediente,subex);
-         //Creamos el Directorio 
+       
+            //Creamos el Directorio 
             System.IO.Directory.CreateDirectory(pathString);
             pathString = System.IO.Path.Combine(pathString, data.Documento.FileName);
-          //Validamos si el documento Existe
+        
+            //Validamos si el documento Existe
             if (!System.IO.File.Exists(pathString))
             {
                 using (System.IO.FileStream fs = System.IO.File.Create(pathString))
