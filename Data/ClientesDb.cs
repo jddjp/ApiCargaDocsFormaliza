@@ -71,6 +71,13 @@ namespace ApiCargaDocsFormaliza.Data
         {
             return _clientesCollection.Find<Cliente>(cli => cli.Clave_Expediente == id).ToList();
         }
+        //Metodo Para Filtar por Tipo de Expediente y clave
+        public List<Cliente> GetByClave_ExpedienteAndTipoSubExpediente(string ClaveExpediente, int clave3)
+        {
+            return _clientesCollection.Find<Cliente>
+                (cli => cli.Clave_Expediente == ClaveExpediente & cli.Tipo_Sub_SubExpediente == clave3 ).ToList();
+        }
+
         public Cliente2 GetById2(string id)
         {
             return _clientes2Collection.Find<Cliente2>(cliente2 => cliente2.Clave_Origen == id).FirstOrDefault();

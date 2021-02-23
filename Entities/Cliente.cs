@@ -26,7 +26,9 @@ namespace ApiCargaDocsFormaliza.Entities
         [BsonElement("Documento_data")]
         [BsonRepresentation(BsonType.String)]
         public string Documento_data { get; set; }
-     
+        //Agregar el tipo de ruta para 
+        public int Tipo_Sub_SubExpediente { get; set; }
+
 
 
     }

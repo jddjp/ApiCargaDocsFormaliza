@@ -35,8 +35,10 @@ namespace ApiCargaDocsFormaliza
             {
                 c.SwaggerDoc("AppAdministration", new OpenApiInfo()
                 {
-                    Title = "Api Expedientes",
-                    Version = "V1"
+                    Title = "Api Expedientes Digitales",
+                    Version = "V2",
+                    Description="Se Actualizo Para Realizar El Filtro de Documentos ",
+                    Contact= new OpenApiContact { Name="Jose Daniel de Jesus Perez",Email="jose.dejesus@fomepade.com.mx" }
                 });
             });
             services.AddControllers();

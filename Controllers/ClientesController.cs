@@ -25,11 +25,15 @@ namespace ApiCargaDocsFormaliza.Controllers
             _clienteDb = clienteDb;
         }
 
+
+      
+
         [HttpGet]
         public IActionResult Get()
         {
             return Ok(_clienteDb.Get());
         }
+
 
         [HttpGet("{id}", Name = "GetCliente")]
         public IActionResult GetById(string id)
@@ -41,8 +45,9 @@ namespace ApiCargaDocsFormaliza.Controllers
             }
            
             return Ok(cliente);
-           
+   
         }
+      
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm]ClienteDatos data)
@@ -67,7 +72,7 @@ namespace ApiCargaDocsFormaliza.Controllers
             else if (data.TipoExpediente == 22 & data.TipocSubExpediente == 2201)
             {
                 if (_clienteDb.GetByIdTipoSubSubExpediente(data.TipocSubSubExpediente) == null) return BadRequest("Tipo de  SubSubExpediente no Encontrado");
-                subex = _clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente).Descripcion_SubExpediente+"\\"+ _clienteDb.GetByIdTipoSubSubExpediente(data.TipocSubSubExpediente).Descripcion_SubSubExpediente;
+                subex = _clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente).Descripcion_SubExpediente+@"/"+ _clienteDb.GetByIdTipoSubSubExpediente(data.TipocSubSubExpediente).Descripcion_SubSubExpediente;
 
 
             }//Sigue su flujo normal si yno entro en ninguna de las dos condiciones
@@ -123,6 +128,9 @@ namespace ApiCargaDocsFormaliza.Controllers
                 obj.Documento = barray;
                 doc = Convert.ToBase64String(obj.Documento);
             }
+          //  validamos la ruta a mostrar URL 
+
+        
             //Guardamos La informacion Correspondiente en la base de datos
             cliente = new Cliente()
             {
@@ -138,8 +146,12 @@ namespace ApiCargaDocsFormaliza.Controllers
                  _clienteDb.GetByIdExpedienteClave(data.TipoExpediente).Descripcion_Expediente+"/"+
                 data.IdExpediente+"/"+
                 subex
-                +"/"+data.Documento.FileName
+                +"/"+data.Documento.FileName,
+
+                //Agregar Clave de  SubSubExpediente para los documentos de firma Digital
+                Tipo_Sub_SubExpediente =data.TipocSubSubExpediente
             };
+          
             //Se crea el documento en la base de datos 
             _clienteDb.Create(cliente);
             //redireccionamos la api a la funcin getcliente donde busca sus clientes 
