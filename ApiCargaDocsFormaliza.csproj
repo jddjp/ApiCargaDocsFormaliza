@@ -5,9 +5,7 @@
     <UserSecretsId>abb6d70c-d6ee-48f3-9a97-5c68fc9a2e22</UserSecretsId>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\Desarrollo\source\repos\josedejesus-dev\ApiCargaDocsFormaliza\ApiCargaDocsFormaliza.xml</DocumentationFile>
-  </PropertyGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />

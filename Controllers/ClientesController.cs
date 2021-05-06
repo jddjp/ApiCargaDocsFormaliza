@@ -53,14 +53,14 @@ namespace ApiCargaDocsFormaliza.Controllers
         public async Task<IActionResult> CreateAsync([FromForm]ClienteDatos data)
         {
             
-            //Validamos si los credenciales de quien solicita la peticion existen 
-           //y nos traemos la carpeta raiz definida para sus documentos
-            if (_clienteDb.GetById2(data.CredencialesCliente) == null) return BadRequest("No tiene acceso");
-            if (_clienteDb.GetByIdTipoDocumento(data.Tipo_Documento)==null) return BadRequest("Tipo de documento no Encontrado");
-            if (_clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente) == null) return BadRequest("Tipo de Sub Expediente no Encontrado");
-            if (_clienteDb.GetByIdExpedienteClave(data.TipoExpediente) == null) return BadRequest("Tipo de  Expediente no Encontrado");
-          
+           // //Validamos si los credenciales de quien solicita la peticion existen 
+           ////y nos traemos la carpeta raiz definida para sus documentos
+           // if (_clienteDb.GetById2(data.CredencialesCliente) == null) return BadRequest("No tiene acceso");
+           // if (_clienteDb.GetByIdTipoDocumento(data.Tipo_Documento)==null) return BadRequest("Tipo de documento no Encontrado");
+           // if (_clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente) == null) return BadRequest("Tipo de Sub Expediente no Encontrado");
 
+           // if (_clienteDb.GetByIdExpedienteClave(data.TipoExpediente) == null) {}return BadRequest("Tipo de  Expediente no Encontrado");
+          
             //Vamos a validar la ruta de Expedientecliente pues esta ruta no tiene TipóSubExpediente
             var subex="";
             if (data.TipoExpediente == 27)
