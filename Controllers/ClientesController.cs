@@ -52,23 +52,24 @@ namespace ApiCargaDocsFormaliza.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm]ClienteDatos data)
         {
-            
-           // //Validamos si los credenciales de quien solicita la peticion existen 
-           ////y nos traemos la carpeta raiz definida para sus documentos
-           // if (_clienteDb.GetById2(data.CredencialesCliente) == null) return BadRequest("No tiene acceso");
-           // if (_clienteDb.GetByIdTipoDocumento(data.Tipo_Documento)==null) return BadRequest("Tipo de documento no Encontrado");
-           // if (_clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente) == null) return BadRequest("Tipo de Sub Expediente no Encontrado");
 
-           // if (_clienteDb.GetByIdExpedienteClave(data.TipoExpediente) == null) {}return BadRequest("Tipo de  Expediente no Encontrado");
-          
+            // //Validamos si los credenciales de quien solicita la peticion existen 
+            //y nos traemos la carpeta raiz definida para sus documentos
+            if (_clienteDb.GetById2(data.CredencialesCliente) == null) return BadRequest("No tiene acceso");
+            if (_clienteDb.GetByIdTipoDocumento(data.Tipo_Documento) == null) return BadRequest("Tipo de documento no Encontrado");
+            if (_clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente) == null) return BadRequest("Tipo de Sub Expediente no Encontrado");
+            if (_clienteDb.GetByIdExpedienteClave(data.TipoExpediente) == null) return BadRequest("Tipo de  Expediente no Encontrado");
+            if (_clienteDb.GetByIdTipoSubSubExpediente(data.TipoExpediente) == null) return BadRequest("Tipo de  Sub Sub Expediente no encontrado");
+
+
             //Vamos a validar la ruta de Expedientecliente pues esta ruta no tiene TipóSubExpediente
-            var subex="";
+            var subex ="";
             if (data.TipoExpediente == 27)
             {
                 subex = data.IdExpediente;
             }
-            //Validaremos si es de tipo Expediente de credito:22 y despues Originacion:2201 para agregar el subsubexpediente a la ruta 
 
+            //Validaremos si es de tipo Expediente de credito:22 y despues Originacion:2201 para agregar el subsubexpediente a la ruta 
             else if (data.TipoExpediente == 22 & data.TipocSubExpediente == 2201)
             {
                 if (_clienteDb.GetByIdTipoSubSubExpediente(data.TipocSubSubExpediente) == null) return BadRequest("Tipo de  SubSubExpediente no Encontrado");
@@ -95,24 +96,27 @@ namespace ApiCargaDocsFormaliza.Controllers
             //Creamos el Directorio 
             System.IO.Directory.CreateDirectory(pathString);
             pathString = System.IO.Path.Combine(pathString, data.Documento.FileName);
-        
-            //Validamos si el documento Existe
-            if (!System.IO.File.Exists(pathString))
-            {
-                using (System.IO.FileStream fs = System.IO.File.Create(pathString))
-                {
-                    for (byte i = 0; i < 100; i++)
-                    {
-                        fs.WriteByte(i);
-                    }
 
-                }
-            }
-            else
-            {
-                return BadRequest("El documento ya Existe");
+            ////Validamos si el documento Existe
+            //if (!System.IO.File.Exists(pathString))
+            //{
+            //    using (System.IO.FileStream fs = System.IO.File.Create(pathString))
+            //    {
+            //        for (byte i = 0; i < 100; i++)
+            //        {
+            //            fs.WriteByte(i);
+            //        }
 
-            }
+            //    }
+            //}
+            //else
+            //{
+               
+            //    return BadRequest("El documento ya Existe");
+
+            //}
+
+
             //Copiamos el documento y o archivo en el servidor
             using (var stream = new FileStream(pathString, FileMode.Create))
             {
