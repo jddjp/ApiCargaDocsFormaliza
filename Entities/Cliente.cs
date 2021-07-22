@@ -28,8 +28,8 @@ namespace ApiCargaDocsFormaliza.Entities
         public string Documento_data { get; set; }
         //Agregar el tipo de ruta para 
         public int Tipo_Sub_SubExpediente { get; set; }
-
-
+        //Se agreaga el tipo de documento para poder escagar el expediente con todo y nombre
+        public string NombreDocumento { get; set; }
 
     }
 }

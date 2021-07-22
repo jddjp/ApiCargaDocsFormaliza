@@ -59,8 +59,7 @@ namespace ApiCargaDocsFormaliza.Controllers
             if (_clienteDb.GetByIdTipoDocumento(data.Tipo_Documento) == null) return BadRequest("Tipo de documento no Encontrado");
             if (_clienteDb.GetByIdsubExpedienteClave(data.TipocSubExpediente) == null) return BadRequest("Tipo de Sub Expediente no Encontrado");
             if (_clienteDb.GetByIdExpedienteClave(data.TipoExpediente) == null) return BadRequest("Tipo de  Expediente no Encontrado");
-            if (_clienteDb.GetByIdTipoSubSubExpediente(data.TipoExpediente) == null) return BadRequest("Tipo de  Sub Sub Expediente no encontrado");
-
+          
 
             //Vamos a validar la ruta de Expedientecliente pues esta ruta no tiene TipóSubExpediente
             var subex ="";
@@ -153,7 +152,8 @@ namespace ApiCargaDocsFormaliza.Controllers
                 +"/"+data.Documento.FileName,
 
                 //Agregar Clave de  SubSubExpediente para los documentos de firma Digital
-                Tipo_Sub_SubExpediente =data.TipocSubSubExpediente
+                Tipo_Sub_SubExpediente =data.TipocSubSubExpediente,
+                NombreDocumento=data.Documento.FileName
             };
           
             //Se crea el documento en la base de datos 
